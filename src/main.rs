@@ -9,7 +9,7 @@ fn main() {
         match socket.recv_from(&mut buffer) {
             Ok((size, addr)) => {
                 println!("Request: {}", String::from_utf8_lossy(&buffer));
-                socket.send_to(&buffer, addr).unwrap();
+                socket.send_to(&buffer[..size], addr).unwrap();
             },
             Err(e) => println!("Failed to read from connection: {}", e),
         }
