@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use std::net::{SocketAddr, TcpListener, UdpSocket};
+use std::net::{SocketAddr, TcpListener, TcpStream, UdpSocket};
 use std::io::Read;
 
 struct User {
@@ -8,7 +8,7 @@ struct User {
 }
 fn main() {
 
-    let socket = UdpSocket::bind("127.0.0.1:9595").unwrap();
+    let socket = UdpSocket::bind("303:c8b5:db69:fc6d::3131:9595").unwrap();
 
     let mut rooms: HashMap<String, Vec<User>> = HashMap::new();
     loop {
@@ -50,4 +50,23 @@ fn main() {
             Err(e) => println!("Failed to read from connection: {}", e),
         }
     }
+}
+
+#[test]
+fn test() {
+    let mut socket = UdpSocket::bind("303:c8b5:db69:fc6d::3131:9595").unwrap();
+
+    let mut buffer = [0; 1024];
+    let x = socket.recv_from(&mut buffer).unwrap();
+    socket.send_to(b"hi! from server", x.1).unwrap();
+    println!("{}", String::from_utf8_lossy(&buffer));
+}
+
+
+#[test]
+fn test2() {
+    let mut stream = TcpStream::connect("109.176.250.101:65534").unwrap();
+    let mut buffer = [0; 1024];
+    stream.read(&mut buffer).unwrap();
+    println!("AGA! {}", String::from_utf8_lossy(&buffer));
 }
